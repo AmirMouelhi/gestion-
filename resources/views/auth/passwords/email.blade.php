@@ -1,4 +1,4 @@
-@extends('layouts.Style')
+@extends('Layout.Style')
 
 @section('content')
 <div class="container">
