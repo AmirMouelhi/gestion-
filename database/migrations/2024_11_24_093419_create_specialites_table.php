@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('specialites', function (Blueprint $table) {
             $table->unsignedInteger('codeSp')->primary();
             $table->string('designationSp');
+            $table->timestamps();
         });
     }
 

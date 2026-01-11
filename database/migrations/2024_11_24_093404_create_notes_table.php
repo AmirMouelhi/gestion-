@@ -22,6 +22,8 @@ return new class extends Migration
             
             $table->foreign('nce')->references('nce')->on('etudiants')->onDelete('cascade');
             $table->foreign('codeMat')->references('codeMat')->on('matieres')->onDelete('cascade');
+            
+            $table->timestamps();
         });
     }
 
