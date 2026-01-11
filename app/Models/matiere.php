@@ -19,12 +19,15 @@ class Matiere extends Model
         'codeMat',
         'designationMat',
         'codeSp',
-        'coefficient',
+        'coef',
+        'credit',
         'niveau',
     ];
 
     protected $casts = [
-        'coefficient' => 'integer',
+        'coef' => 'float',
+        'credit' => 'integer',
+        'niveau' => 'integer',
     ];
 
     // Relationships

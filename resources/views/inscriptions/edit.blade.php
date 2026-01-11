@@ -1,6 +1,6 @@
 @extends('Layout.Style')
 
-@section('title', 'Ajouter une Inscription')
+@section('title', 'Modifier une Inscription')
 
 @section('content')
 <div class="row justify-content-center">
@@ -11,15 +11,16 @@
             </a>
             <div>
                 <h1 class="h2 mb-1">
-                    <i class="bi bi-person-plus-fill text-primary me-2"></i>
-                    Ajouter une Inscription
+                    <i class="bi bi-pencil-square text-primary me-2"></i>
+                    Modifier une Inscription
                 </h1>
-                <p class="text-muted mb-0">Remplissez le formulaire ci-dessous</p>
+                <p class="text-muted mb-0">{{ $inscription->etudiant->fullName ?? 'N/A' }} - {{ $inscription->specialite->designationSp ?? 'N/A' }}</p>
             </div>
         </div>
 
-        <form action="{{ route('inscriptions.store') }}" method="POST">
+        <form action="{{ route('inscriptions.update', $inscription->id) }}" method="POST">
             @csrf
+            @method('PUT')
             
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-header bg-primary text-white">
@@ -36,7 +37,7 @@
                             <select class="form-select @error('nce') is-invalid @enderror" id="nce" name="nce" required>
                                 <option value="">Sélectionner un étudiant</option>
                                 @foreach($etudiants as $etudiant)
-                                    <option value="{{ $etudiant->nce }}" {{ old('nce') == $etudiant->nce ? 'selected' : '' }}>
+                                    <option value="{{ $etudiant->nce }}" {{ old('nce', $inscription->nce) == $etudiant->nce ? 'selected' : '' }}>
                                         {{ $etudiant->nce }} - {{ $etudiant->fullName }}
                                     </option>
                                 @endforeach
@@ -53,7 +54,7 @@
                             <select class="form-select @error('codeSp') is-invalid @enderror" id="codeSp" name="codeSp" required>
                                 <option value="">Sélectionner une spécialité</option>
                                 @foreach($specialites as $specialite)
-                                    <option value="{{ $specialite->codeSp }}" {{ old('codeSp') == $specialite->codeSp ? 'selected' : '' }}>
+                                    <option value="{{ $specialite->codeSp }}" {{ old('codeSp', $inscription->codeSp) == $specialite->codeSp ? 'selected' : '' }}>
                                         {{ $specialite->designationSp }}
                                     </option>
                                 @endforeach
@@ -74,7 +75,7 @@
                                     class="form-control @error('dateInscription') is-invalid @enderror" 
                                     id="dateInscription" 
                                     name="dateInscription" 
-                                    value="{{ old('dateInscription', date('Y-m-d')) }}"
+                                    value="{{ old('dateInscription', $inscription->dateInscription) }}"
                                     required
                                 >
                                 @error('dateInscription')
@@ -92,7 +93,7 @@
                                 <select class="form-select @error('niveauInscription') is-invalid @enderror" id="niveauInscription" name="niveauInscription" required>
                                     <option value="">Sélectionner</option>
                                     @for($i = 1; $i <= 5; $i++)
-                                        <option value="{{ $i }}" {{ old('niveauInscription') == $i ? 'selected' : '' }}>
+                                        <option value="{{ $i }}" {{ old('niveauInscription', $inscription->niveauInscription) == $i ? 'selected' : '' }}>
                                             Niveau {{ $i }}
                                         </option>
                                     @endfor
@@ -117,7 +118,7 @@
                                     class="form-control @error('resultatFinale') is-invalid @enderror" 
                                     id="resultatFinale" 
                                     name="resultatFinale" 
-                                    value="{{ old('resultatFinale') }}"
+                                    value="{{ old('resultatFinale', $inscription->resultatFinale) }}"
                                     placeholder="Ex: 15.50"
                                     required
                                 >
@@ -135,11 +136,11 @@
                                 <span class="input-group-text"><i class="bi bi-award"></i></span>
                                 <select class="form-select @error('mention') is-invalid @enderror" id="mention" name="mention" required>
                                     <option value="">Sélectionner</option>
-                                    <option value="Passable" {{ old('mention') == 'Passable' ? 'selected' : '' }}>Passable</option>
-                                    <option value="Assez Bien" {{ old('mention') == 'Assez Bien' ? 'selected' : '' }}>Assez Bien</option>
-                                    <option value="Bien" {{ old('mention') == 'Bien' ? 'selected' : '' }}>Bien</option>
-                                    <option value="Très Bien" {{ old('mention') == 'Très Bien' ? 'selected' : '' }}>Très Bien</option>
-                                    <option value="Excellent" {{ old('mention') == 'Excellent' ? 'selected' : '' }}>Excellent</option>
+                                    <option value="Passable" {{ old('mention', $inscription->mention) == 'Passable' ? 'selected' : '' }}>Passable</option>
+                                    <option value="Assez Bien" {{ old('mention', $inscription->mention) == 'Assez Bien' ? 'selected' : '' }}>Assez Bien</option>
+                                    <option value="Bien" {{ old('mention', $inscription->mention) == 'Bien' ? 'selected' : '' }}>Bien</option>
+                                    <option value="Très Bien" {{ old('mention', $inscription->mention) == 'Très Bien' ? 'selected' : '' }}>Très Bien</option>
+                                    <option value="Excellent" {{ old('mention', $inscription->mention) == 'Excellent' ? 'selected' : '' }}>Excellent</option>
                                 </select>
                                 @error('mention')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -155,12 +156,10 @@
                     <i class="bi bi-x-circle me-2"></i>Annuler
                 </a>
                 <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-check-circle me-2"></i>Enregistrer
+                    <i class="bi bi-check-circle me-2"></i>Mettre à jour
                 </button>
             </div>
         </form>
     </div>
 </div>
-  </form>
-
 @endsection

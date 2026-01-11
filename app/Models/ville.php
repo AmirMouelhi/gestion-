@@ -20,12 +20,12 @@ class Ville extends Model
     ];
 
     // Relationships
-    public function etudiantsResidents()
+    public function etudiantsHabitantIci()
     {
         return $this->hasMany(Etudiant::class, 'cpadresse', 'cpVilles');
     }
 
-    public function etudiantsNes()
+    public function etudiantsNesIci()
     {
         return $this->hasMany(Etudiant::class, 'cpLieuNaissance', 'cpVilles');
     }

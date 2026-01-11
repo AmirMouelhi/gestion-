@@ -34,7 +34,6 @@ Route::middleware(['auth'])->group(function () {
         'destroy' => 'Etudiants.delete',
     ]);
 
-    // Inscriptions Routes
     Route::resource('inscriptions', InscriptionController::class)->parameters([
         'inscriptions' => 'id'
     ]);
@@ -54,7 +53,6 @@ Route::middleware(['auth'])->group(function () {
         'specialites' => 'codeSp'
     ]);
 
-    // Villes Routes
     Route::resource('villes', VilleController::class)->parameters([
         'villes' => 'cpVilles'
     ]);

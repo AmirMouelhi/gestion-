@@ -2,45 +2,82 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ville;
+use App\Models\Ville;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class VilleController extends Controller
 {
     public function index()
     {
-        $villes = ville::all();
-        return view('villes.index', ["villes" => $villes]);
+        $villes = Ville::withCount(['etudiantsNesIci', 'etudiantsHabitantIci'])->orderBy('designationVilles')->paginate(15);
+        return view('villes.index', compact('villes'));
     }
 
-    public function show($id)
-{
-    $ville = ville::findOrFail($id); 
-    return view('villes.show', ["ville" => $ville]); 
-}
-
+    public function show($cpVilles)
+    {
+        $ville = Ville::with(['etudiantsNesIci', 'etudiantsHabitantIci'])->findOrFail($cpVilles);
+        return view('villes.show', compact('ville'));
+    }
 
     public function create()
     {
-        $villes=ville::all();
-        return view('villes.create',['villes'=>$villes]);
+        return view('villes.create');
     }
 
     public function store(Request $request)
     {
-        $info = $request->validate([
-            'cpVilles' => 'required',
-            'DesignationVilles' => 'required',
-        
+        $validated = $request->validate([
+            'cpVilles' => 'required|unique:villes,cpVilles|integer',
+            'designationVilles' => 'required|string|max:255',
         ]);
-        ville::create($info);
-        return redirect()->route('villes.index');  
+        
+        DB::beginTransaction();
+        try {
+            Ville::create($validated);
+            DB::commit();
+            return redirect()->route('villes.index')->with('success', 'Ville créée avec succès!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Erreur lors de la création.');
+        }
     }
 
-    public function destroy($id)
+    public function edit($cpVilles)
     {
-        $villes = ville::findOrFail($id);
-        $villes->delete();
-        return redirect()->route('villes.index');
+        $ville = Ville::findOrFail($cpVilles);
+        return view('villes.edit', compact('ville'));
+    }
+
+    public function update(Request $request, $cpVilles)
+    {
+        $validated = $request->validate([
+            'designationVilles' => 'required|string|max:255',
+        ]);
+        
+        DB::beginTransaction();
+        try {
+            $ville = Ville::findOrFail($cpVilles);
+            $ville->update($validated);
+            DB::commit();
+            return redirect()->route('villes.show', $cpVilles)->with('success', 'Ville modifiée!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Erreur lors de la modification.');
+        }
+    }
+
+    public function destroy($cpVilles)
+    {
+        DB::beginTransaction();
+        try {
+            $ville = Ville::findOrFail($cpVilles);
+            $ville->delete();
+            DB::commit();
+            return redirect()->route('villes.index')->with('success', 'Ville supprimée!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Erreur lors de la suppression.');
+        }
     }
 }

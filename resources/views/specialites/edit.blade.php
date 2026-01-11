@@ -1,6 +1,6 @@
 @extends('Layout.Style')
 
-@section('title', 'Ajouter une Spécialité')
+@section('title', 'Modifier une Spécialité')
 
 @section('content')
 <div class="row justify-content-center">
@@ -11,15 +11,16 @@
             </a>
             <div>
                 <h1 class="h2 mb-1">
-                    <i class="bi bi-mortarboard-fill text-primary me-2"></i>
-                    Ajouter une Spécialité
+                    <i class="bi bi-pencil-square text-primary me-2"></i>
+                    Modifier une Spécialité
                 </h1>
-                <p class="text-muted mb-0">Remplissez le formulaire ci-dessous</p>
+                <p class="text-muted mb-0">{{ $specialite->designationSp }}</p>
             </div>
         </div>
 
-        <form action="{{ route('specialites.store') }}" method="POST">
+        <form action="{{ route('specialites.update', $specialite->codeSp) }}" method="POST">
             @csrf
+            @method('PUT')
             
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-header bg-primary text-white">
@@ -36,18 +37,15 @@
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-hash"></i></span>
                                 <input 
-                                    type="number" 
-                                    class="form-control @error('codeSp') is-invalid @enderror" 
+                                    type="text" 
+                                    class="form-control" 
                                     id="codeSp" 
-                                    name="codeSp" 
-                                    value="{{ old('codeSp') }}"
-                                    placeholder="Ex: 1"
-                                    required
+                                    value="{{ $specialite->codeSp }}"
+                                    disabled
+                                    readonly
                                 >
-                                @error('codeSp')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
                             </div>
+                            <small class="text-muted">Le code ne peut pas être modifié</small>
                         </div>
                         
                         <div class="col-md-6">
@@ -61,7 +59,7 @@
                                     class="form-control @error('designationSp') is-invalid @enderror" 
                                     id="designationSp" 
                                     name="designationSp" 
-                                    value="{{ old('designationSp') }}"
+                                    value="{{ old('designationSp', $specialite->designationSp) }}"
                                     placeholder="Ex: Informatique"
                                     required
                                 >
@@ -79,7 +77,7 @@
                     <i class="bi bi-x-circle me-2"></i>Annuler
                 </a>
                 <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-check-circle me-2"></i>Enregistrer
+                    <i class="bi bi-check-circle me-2"></i>Mettre à jour
                 </button>
             </div>
         </form>

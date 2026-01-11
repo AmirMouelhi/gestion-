@@ -9,14 +9,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('inscriptions', function (Blueprint $table) {
-            $table->unsignedBigInteger('nce');
+            $table->id();
+            $table->string('nce');
             $table->unsignedBigInteger('codeSp');
             $table->date('dateInscription');
             $table->unsignedInteger('niveauInscription');
             $table->float('resultatFinale');
             $table->string('mention');
 
-            $table->primary(['nce', 'codeSp', 'dateInscription']);
             $table->foreign('nce')->references('nce')->on('etudiants')->cascadeOnDelete();
             $table->foreign('codeSp')->references('codeSp')->on('specialites')->cascadeOnDelete();
 

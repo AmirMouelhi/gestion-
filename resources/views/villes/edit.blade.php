@@ -1,6 +1,6 @@
 @extends('Layout.Style')
 
-@section('title', 'Ajouter une Ville')
+@section('title', 'Modifier une Ville')
 
 @section('content')
 <div class="row justify-content-center">
@@ -11,15 +11,16 @@
             </a>
             <div>
                 <h1 class="h2 mb-1">
-                    <i class="bi bi-building-add text-primary me-2"></i>
-                    Ajouter une Ville
+                    <i class="bi bi-pencil-square text-primary me-2"></i>
+                    Modifier une Ville
                 </h1>
-                <p class="text-muted mb-0">Remplissez le formulaire ci-dessous</p>
+                <p class="text-muted mb-0">{{ $ville->designationVilles }}</p>
             </div>
         </div>
 
-        <form action="{{ route('villes.store') }}" method="POST">
+        <form action="{{ route('villes.update', $ville->cpVilles) }}" method="POST">
             @csrf
+            @method('PUT')
             
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-header bg-primary text-white">
@@ -37,17 +38,14 @@
                                 <span class="input-group-text"><i class="bi bi-mailbox"></i></span>
                                 <input 
                                     type="number" 
-                                    class="form-control @error('cpVilles') is-invalid @enderror" 
+                                    class="form-control" 
                                     id="cpVilles" 
-                                    name="cpVilles" 
-                                    value="{{ old('cpVilles') }}"
-                                    placeholder="Ex: 75001"
-                                    required
+                                    value="{{ $ville->cpVilles }}"
+                                    disabled
+                                    readonly
                                 >
-                                @error('cpVilles')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
                             </div>
+                            <small class="text-muted">Le code postal ne peut pas être modifié</small>
                         </div>
                         
                         <div class="col-md-6">
@@ -61,7 +59,7 @@
                                     class="form-control @error('designationVilles') is-invalid @enderror" 
                                     id="designationVilles" 
                                     name="designationVilles" 
-                                    value="{{ old('designationVilles') }}"
+                                    value="{{ old('designationVilles', $ville->designationVilles) }}"
                                     placeholder="Ex: Paris"
                                     required
                                 >
@@ -79,7 +77,7 @@
                     <i class="bi bi-x-circle me-2"></i>Annuler
                 </a>
                 <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-check-circle me-2"></i>Enregistrer
+                    <i class="bi bi-check-circle me-2"></i>Mettre à jour
                 </button>
             </div>
         </form>

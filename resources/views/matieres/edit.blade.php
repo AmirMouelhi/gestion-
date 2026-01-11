@@ -1,6 +1,6 @@
 @extends('Layout.Style')
 
-@section('title', 'Ajouter une Matière')
+@section('title', 'Modifier une Matière')
 
 @section('content')
 <div class="row justify-content-center">
@@ -11,15 +11,16 @@
             </a>
             <div>
                 <h1 class="h2 mb-1">
-                    <i class="bi bi-book-fill text-primary me-2"></i>
-                    Ajouter une Matière
+                    <i class="bi bi-pencil-square text-primary me-2"></i>
+                    Modifier une Matière
                 </h1>
-                <p class="text-muted mb-0">Remplissez le formulaire ci-dessous</p>
+                <p class="text-muted mb-0">{{ $matiere->designationMat }}</p>
             </div>
         </div>
 
-        <form action="{{ route('matieres.store') }}" method="POST">
+        <form action="{{ route('matieres.update', $matiere->codeMat) }}" method="POST">
             @csrf
+            @method('PUT')
             
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-header bg-primary text-white">
@@ -36,18 +37,15 @@
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-hash"></i></span>
                                 <input 
-                                    type="number" 
-                                    class="form-control @error('codeMat') is-invalid @enderror" 
+                                    type="text" 
+                                    class="form-control" 
                                     id="codeMat" 
-                                    name="codeMat" 
-                                    value="{{ old('codeMat') }}"
-                                    placeholder="Ex: 1001"
-                                    required
+                                    value="{{ $matiere->codeMat }}"
+                                    disabled
+                                    readonly
                                 >
-                                @error('codeMat')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
                             </div>
+                            <small class="text-muted">Le code ne peut pas être modifié</small>
                         </div>
 
                         <div class="col-md-8">
@@ -61,7 +59,7 @@
                                     class="form-control @error('designationMat') is-invalid @enderror" 
                                     id="designationMat" 
                                     name="designationMat" 
-                                    value="{{ old('designationMat') }}"
+                                    value="{{ old('designationMat', $matiere->designationMat) }}"
                                     placeholder="Ex: Mathématiques"
                                     required
                                 >
@@ -70,45 +68,8 @@
                                 @enderror
                             </div>
                         </div>
-
-                        <div class="col-md-12">
-                            <label for="codeSp" class="form-label">
-                                Spécialité <span class="text-danger">*</span>
-                            </label>
-                            <select class="form-select @error('codeSp') is-invalid @enderror" id="codeSp" name="codeSp" required>
-                                <option value="">Sélectionner une spécialité</option>
-                                @foreach($specialites as $specialite)
-                                    <option value="{{ $specialite->codeSp }}" {{ old('codeSp') == $specialite->codeSp ? 'selected' : '' }}>
-                                        {{ $specialite->designationSp }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('codeSp')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-4">
-                            <label for="niveau" class="form-label">
-                                Niveau <span class="text-danger">*</span>
-                            </label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-layers"></i></span>
-                                <select class="form-select @error('niveau') is-invalid @enderror" id="niveau" name="niveau" required>
-                                    <option value="">Sélectionner</option>
-                                    @for($i = 1; $i <= 5; $i++)
-                                        <option value="{{ $i }}" {{ old('niveau') == $i ? 'selected' : '' }}>
-                                            Niveau {{ $i }}
-                                        </option>
-                                    @endfor
-                                </select>
-                                @error('niveau')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
                         
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label for="coef" class="form-label">
                                 Coefficient <span class="text-danger">*</span>
                             </label>
@@ -117,12 +78,10 @@
                                 <input 
                                     type="number" 
                                     step="0.1"
-                                    min="1"
-                                    max="5"
                                     class="form-control @error('coef') is-invalid @enderror" 
                                     id="coef" 
                                     name="coef" 
-                                    value="{{ old('coef') }}"
+                                    value="{{ old('coef', $matiere->coef) }}"
                                     placeholder="Ex: 2.5"
                                     required
                                 >
@@ -132,7 +91,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label for="credit" class="form-label">
                                 Crédits <span class="text-danger">*</span>
                             </label>
@@ -140,12 +99,10 @@
                                 <span class="input-group-text"><i class="bi bi-star"></i></span>
                                 <input 
                                     type="number" 
-                                    min="1"
-                                    max="6"
                                     class="form-control @error('credit') is-invalid @enderror" 
                                     id="credit" 
                                     name="credit" 
-                                    value="{{ old('credit') }}"
+                                    value="{{ old('credit', $matiere->credit) }}"
                                     placeholder="Ex: 5"
                                     required
                                 >
@@ -163,7 +120,7 @@
                     <i class="bi bi-x-circle me-2"></i>Annuler
                 </a>
                 <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-check-circle me-2"></i>Enregistrer
+                    <i class="bi bi-check-circle me-2"></i>Mettre à jour
                 </button>
             </div>
         </form>

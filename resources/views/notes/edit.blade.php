@@ -1,6 +1,6 @@
 @extends('Layout.Style')
 
-@section('title', 'Ajouter une Note')
+@section('title', 'Modifier une Note')
 
 @section('content')
 <div class="row justify-content-center">
@@ -11,15 +11,16 @@
             </a>
             <div>
                 <h1 class="h2 mb-1">
-                    <i class="bi bi-clipboard-plus text-primary me-2"></i>
-                    Ajouter une Note
+                    <i class="bi bi-pencil-square text-primary me-2"></i>
+                    Modifier une Note
                 </h1>
-                <p class="text-muted mb-0">Remplissez le formulaire ci-dessous</p>
+                <p class="text-muted mb-0">{{ $note->etudiant->fullName ?? 'N/A' }} - {{ $note->matiere->designationMat ?? 'N/A' }}</p>
             </div>
         </div>
 
-        <form action="{{ route('notes.store') }}" method="POST">
+        <form action="{{ route('notes.update', $note->id) }}" method="POST">
             @csrf
+            @method('PUT')
             
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-header bg-primary text-white">
@@ -36,7 +37,7 @@
                             <select class="form-select @error('nce') is-invalid @enderror" id="nce" name="nce" required>
                                 <option value="">Sélectionner un étudiant</option>
                                 @foreach($etudiants as $etudiant)
-                                    <option value="{{ $etudiant->nce }}" {{ old('nce') == $etudiant->nce ? 'selected' : '' }}>
+                                    <option value="{{ $etudiant->nce }}" {{ old('nce', $note->nce) == $etudiant->nce ? 'selected' : '' }}>
                                         {{ $etudiant->nce }} - {{ $etudiant->fullName }}
                                     </option>
                                 @endforeach
@@ -53,7 +54,7 @@
                             <select class="form-select @error('codeMat') is-invalid @enderror" id="codeMat" name="codeMat" required>
                                 <option value="">Sélectionner une matière</option>
                                 @foreach($matieres as $matiere)
-                                    <option value="{{ $matiere->codeMat }}" {{ old('codeMat') == $matiere->codeMat ? 'selected' : '' }}>
+                                    <option value="{{ $matiere->codeMat }}" {{ old('codeMat', $note->codeMat) == $matiere->codeMat ? 'selected' : '' }}>
                                         {{ $matiere->designationMat }} ({{ $matiere->specialite->designationSp ?? 'N/A' }})
                                     </option>
                                 @endforeach
@@ -74,7 +75,7 @@
                                     class="form-control @error('dateResultat') is-invalid @enderror" 
                                     id="dateResultat" 
                                     name="dateResultat" 
-                                    value="{{ old('dateResultat', date('Y-m-d')) }}"
+                                    value="{{ old('dateResultat', $note->dateResultat) }}"
                                     required
                                 >
                                 @error('dateResultat')
@@ -97,7 +98,7 @@
                                     class="form-control @error('noteControle') is-invalid @enderror" 
                                     id="noteControle" 
                                     name="noteControle" 
-                                    value="{{ old('noteControle') }}"
+                                    value="{{ old('noteControle', $note->noteControle) }}"
                                     placeholder="Ex: 15.50"
                                     required
                                 >
@@ -122,7 +123,7 @@
                                     class="form-control @error('noteExamen') is-invalid @enderror" 
                                     id="noteExamen" 
                                     name="noteExamen" 
-                                    value="{{ old('noteExamen') }}"
+                                    value="{{ old('noteExamen', $note->noteExamen) }}"
                                     placeholder="Ex: 16.00"
                                     required
                                 >
@@ -148,7 +149,7 @@
                     <i class="bi bi-x-circle me-2"></i>Annuler
                 </a>
                 <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-check-circle me-2"></i>Enregistrer
+                    <i class="bi bi-check-circle me-2"></i>Mettre à jour
                 </button>
             </div>
         </form>
